@@ -10,6 +10,10 @@ Parameters:
     Default: 10.0.0.0/24
     Description: CIDR notation for Public Subnet 1
     Type: String
+  AMI:
+    Default: ami-013a129d325529d4d
+    Description: AMI being used
+    Type: String
 
 Resources:
   phoenixVPC:
@@ -46,3 +50,32 @@ Resources:
     Properties:
       VpcId: !Ref phoenixVPC
       InternetGatewayId: !Ref phoenixigwName
+  phoenixEc2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AMI
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          GroupSet:
+            - Ref: "phoenixsecGroupName"
+          SubnetId: !Ref phoenixpublicSubnet1Name
+
+  phoenixsecGroupName:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allows inbound access on TCP port 80 and allows unrestricted outbound access.
+      VpcId: !Ref phoenixVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: Phoenix Security Group
