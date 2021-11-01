@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This Template creates VPC along with a Public Subnet
+
+Parameters:
+  vpcReference:
+    Description: VPC used to deploy resource below
+    Type: AWS::EC2::VPC::Id
+    Default: .........
+  PublicSubnet:
+    Description: Subnet to be used for Web Server
+    Type: AWS::EC2::Subnet::Id
+    Default: ........
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access into the WordPress web server
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: phoenixpair
+  AMI:
+    Default: ami-013a129d325529d4d
+    Description: AMI being used
+    Type: String
+
+Resources:
+  phoenixEc2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: phoenixpair
+      ImageId: !Ref AMI
+      InstanceType: t3.micro
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          GroupSet:
+            - Ref: "phoenixsecGroupName"
+          SubnetId: !Ref PublicSubnet
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+
+  phoenixsecGroupName:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allows inbound access on TCP port 80 and allows unrestricted outbound access.
+      VpcId: !Ref vpcReference
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: Phoenix Security Group
