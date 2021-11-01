@@ -2,6 +2,10 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: This Template creates VPC along with a Public Subnet
 
 Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access into the WordPress web server
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: phoenixpair
   vpcCIDR:
     Default: 10.0.0.0/16
     Description: CIDR notation for VPC
@@ -53,13 +57,21 @@ Resources:
   phoenixEc2Instance:
     Type: AWS::EC2::Instance
     Properties:
+      KeyName: phoenixpair
       ImageId: !Ref AMI
+      InstanceType: t3.micro
       NetworkInterfaces:
         - AssociatePublicIpAddress: "true"
           DeviceIndex: "0"
           GroupSet:
             - Ref: "phoenixsecGroupName"
           SubnetId: !Ref phoenixpublicSubnet1Name
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
 
   phoenixsecGroupName:
     Type: AWS::EC2::SecurityGroup
