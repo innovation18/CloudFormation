@@ -7,7 +7,23 @@ Parameters:
     Type: String
 
   vpcCIDR:
-    Description: CIDR notation for VPC
+    Description: CIDR range for VPC
+    Type: String
+
+  PublicsubnetCIDR1:
+    Description: IP range for public subnet 1
+    Type: String
+
+  PublicsubnetCIDR2:
+    Description: IP range for public subnet 1
+    Type: String
+
+  PrivatesubnetCIDR1:
+    Description: IP range for public subnet 1
+    Type: String
+
+  PrivatesubnetCIDR2:
+    Description: IP range for public subnet 1
     Type: String
 
 Resources:
@@ -32,3 +48,47 @@ Resources:
     Properties:
       VpcId: !Ref myVPC
       InternetGatewayId: !Ref igwName
+
+  PublicsubnetName1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      VpcId: !Ref myVPC
+      CidrBlock: !Ref PublicsubnetCIDR1
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
+
+  PublicsubnetName2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      VpcId: !Ref myVPC
+      CidrBlock: !Ref PublicsubnetCIDR2
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
+
+  PrivatesubnetName1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      VpcId: !Ref myVPC
+      CidrBlock: !Ref PrivatesubnetCIDR1
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
+
+  PrivatesubnetName2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      VpcId: !Ref myVPC
+      CidrBlock: !Ref PrivatesubnetCIDR2
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
