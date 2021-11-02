@@ -43,7 +43,7 @@ Resources:
         - Key: Name
           Value: Phoenix Public Subnet
 
-  phoenixigwName:
+  phoenixigw:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
@@ -53,7 +53,7 @@ Resources:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId: !Ref phoenixVPC
-      InternetGatewayId: !Ref phoenixigwName
+      InternetGatewayId: !Ref phoenixigw
   phoenixEc2Instance:
     Type: AWS::EC2::Instance
     Properties:
@@ -91,3 +91,19 @@ Resources:
       Tags:
         - Key: Name
           Value: Phoenix Security Group
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref phoenixVPC
+      Tags:
+        - Key: Name
+          Value: Public Route Table
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: phoenixAttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref phoenixigw
