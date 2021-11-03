@@ -233,3 +233,29 @@ Outputs:
   PrivateSubnets:
     Description: A list of private subnets
     Value: !Join [",", [!Ref Privatesubnet1, !Ref Privatesubnet2]]
+    Export:
+      Name: !Sub ${EnvironmentName}-PRI-NETS
+
+  PrivateSubnet1:
+    Description: Private Subnet (AZ1)
+    Value: !Ref Privatesubnet1
+    Export:
+      Name: !Sub ${EnvironmentName}-PRI1-SN
+
+  PrivateSubnet2:
+    Description: Private Subnet (AZ2)
+    Value: !Ref Privatesubnet2
+    Export:
+      Name: !Sub ${EnvironmentName}-PRI2-SN
+
+  PublicSubnet1:
+    Description: Public Subnet (AZ1)
+    Value: !Ref Publicsubnet1
+    Export:
+      Name: !Sub ${EnvironmentName}-PUB1-SN
+
+  PublicSubnet2:
+    Description: Public Subnet (AZ2)
+    Value: !Ref Publicsubnet2
+    Export:
+      Name: !Sub ${EnvironmentName}-PUB2-SN
