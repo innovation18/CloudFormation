@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: This is Udacity Challenge 1 to Launch one EC2 instance in a given VPC, Instance bound to Security Group which only allows inbound access on TCP port 80 and also allows unrestricted outbound access.
+
+Parameters:
+  EnvironmentName:
+    Description: Environment for logical grouping of our Resources
+    Type: String
+
+  AMI:
+    Description: AMI for the instance.
+    Type: String
+
+  VPC:
+    Description: Existing VPC reference.
+    Type: AWS::EC2::VPC::Id
+
+  PublicSubnet:
+    Description: Public Subnet in given VPC.
+    Type: AWS::EC2::Subnet::Id
+
+  KeyPair:
+    Description: Key to SSH into EC2 Instance
+    Type: String
+
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: !Ref KeyPair
+      ImageId: !Ref AMI
+      InstanceType: t3.micro
+      #You can associate a public IP address with a network interface only
+      #if it is the primary network interface (the device index is 0) and
+      #if you are creating a new network interface, not attaching an existing network interface.
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          GroupSet:
+            - Ref: "VPCEC2SecurityGroup"
+          SubnetId: !Ref PublicSubnet
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-EC2Instance
+
+  VPCEC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: This Security Group allows inbound access on TCP port 80, 22 and also allows unrestricted outbound access.
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-EC2SecGroup
