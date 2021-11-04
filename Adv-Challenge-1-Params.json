@@ -1,0 +1,22 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "Challenge-1"
+    },
+    {
+        "ParameterKey": "AMI",
+        "ParameterValue": "ami-013a129d325529d4d"
+    },
+    {
+        "ParameterKey": "KeyPair",
+        "ParameterValue": "********"
+    },
+    {
+        "ParameterKey": "vpcCIDR",
+        "ParameterValue": "10.0.0.0/16"
+    },
+    {
+        "ParameterKey": "PublicSubnetCIDR",
+        "ParameterValue": "10.0.0.0/24"
+    }
+]
