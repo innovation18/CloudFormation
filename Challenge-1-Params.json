@@ -1,0 +1,22 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "Challenge-1"
+    },
+    {
+        "ParameterKey": "VPC",
+        "ParameterValue": "*******"
+    },
+    {
+        "ParameterKey": "PublicSubnet",
+        "ParameterValue": "*******"
+    },
+    {
+        "ParameterKey": "AMI",
+        "ParameterValue": "*******"
+    },
+    {
+        "ParameterKey": "KeyPair",
+        "ParameterValue": "*******"
+    }
+]
