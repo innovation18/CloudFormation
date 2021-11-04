@@ -127,3 +127,22 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
+
+Outputs:
+  VPC:
+    Description: VPC-ID to be used in another stack
+    Value: !Ref VPC
+    Export:
+      Name: !Sub ${EnvironmentName}-VPCID
+
+  PrivateSubnet:
+    Description: Private Subnet ID to be used in another stack
+    Value: !Ref PrivateSubnet
+    Export:
+      Name: !Sub ${EnvironmentName}-PRI-SN
+
+  PublicSubnet:
+    Description: Public Subnet to be used in another stack
+    Value: !Ref PublicSubnet
+    Export:
+      Name: !Sub ${EnvironmentName}-PUB-SN
