@@ -1,7 +1,7 @@
 [
     {
         "ParameterKey": "EnvironmentName",
-        "ParameterValue": "Challenge-1"
+        "ParameterValue": "PhoenixGroup"
     },
     {
         "ParameterKey": "AMI",
