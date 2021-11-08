@@ -1,0 +1,14 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "FinalProject"
+    },
+    {
+        "ParameterKey": "UserName",
+        "ParameterValue": "user"
+    },
+    {
+        "ParameterKey": "Password",
+        "ParameterValue": "password"
+    }
+]

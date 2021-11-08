@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Launch Database in Private Subnets
+
+Parameters:
+  EnvironmentName:
+    Description: "Environment for logical grouping"
+    Type: String
+
+  UserName:
+    Description: User Name for the Database
+    Type: String
+
+  Password:
+    Description: Password for the Database User
+    Type: String
+
+Resources:
+  # RDSsecGroup:      TO DO -- VPC Security Group to be added
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties:
+  #     GroupDescription:
+  #     VpcId:
+  #     SecurityGroupIngress:
+  #       - Security Group Rule
+  #     SecurityGroupEgress:
+  #       - Security Group Rule
+  #     Tags:
+  #       - Key:
+  #         Value:
+
+  RDSSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupDescription: "Private Subnets for Database"
+      DBSubnetGroupName: "RDS Subnet Group"
+      SubnetIds:
+        - Fn::ImportValue: !Sub ${EnvironmentName}-PRI1-SN
+        - Fn::ImportValue: !Sub ${EnvironmentName}-PRI2-SN
+
+  RDSDBInstance:
+    Type: "AWS::RDS::DBInstance"
+    # DeletionPolicy: "Retain"
+    Properties:
+      AllocatedStorage: 20
+      DBInstanceClass: db.t2.small
+      DBSubnetGroupName: !Ref RDSSubnetGroup
+      Engine: mysql
+      MasterUsername: !Sub "${UserName}"
+      MasterUserPassword: !Sub "${Password}"
+      # VPCSecurityGroups:
+      PubliclyAccessible: false
+      MultiAZ: false
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${EnvironmentName}-RDS"
